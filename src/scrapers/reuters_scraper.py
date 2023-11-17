@@ -13,7 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class URLScraper:
+class ReutersScraper:
     def __init__(self, 
                  search_term: str,
                  wait_time: int = 30, total: int = 1e5,
@@ -22,7 +22,7 @@ class URLScraper:
         options.binary_location = r"D:\Studying\UoR\1. Data Mining\Final_Project\chromedriver.exe"
         self.driver = webdriver.Chrome(keep_alive=True, options=options)
         self.wait_time = wait_time
-        self.save_file_path = os.path.join("data", f"reuters_url_{search_term}.csv")
+        self.save_file_path = os.path.join("data", f"reuters_{search_term}.csv")
         self.saved = 0
         self.total = total
         self.pause_min = pause_min
@@ -67,7 +67,7 @@ class URLScraper:
         links = []
         
         for content in content_list[self.saved:]:
-            link = self._get_link_and_text(content)
+            link = self._get_link(content)
             
             if link is not None or link not in self.unique_links:
                 links.append(link)
@@ -96,7 +96,7 @@ class URLScraper:
                 header=not os.path.exists(self.save_file_path),
                 mode="a", index=False)
 
-    def _get_link_and_text(self, content):
+    def _get_link(self, content):
         link = ""
         
         try:
