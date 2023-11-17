@@ -50,6 +50,7 @@ class ReutersScraper:
             load_more_button.click()
         except NoSuchElementException:
             print("Load more button not found!")
+            raise NoSuchElementException
 
     def _save_info(self):
         search_result_list_e = self.driver.find_element(By.CLASS_NAME, "search-result-list")

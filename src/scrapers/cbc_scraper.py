@@ -10,7 +10,7 @@ from selenium.webdriver import ActionChains
 
 from .reuters_scraper import ReutersScraper
 
-class MoscowTimesScraper(ReutersScraper):
+class CBCScraper(ReutersScraper):
     def __init__(self, 
                  search_term: str = "", 
                  wait_time: int = 30, 
@@ -18,21 +18,21 @@ class MoscowTimesScraper(ReutersScraper):
                  pause_min: int = 1, 
                  pause_max: int = 10):
         super().__init__(search_term, wait_time, total, pause_min, pause_max)
-        self.save_file_path = os.path.join("data", f"moscow_times.csv")
+        self.save_file_path = os.path.join("data", f"cbc.csv")
     
     def _load_website(self):
-        base_url = 'https://www.themoscowtimes.com/news'
+        base_url = 'https://www.cbc.ca/search?q=canada&section=news&sortOrder=relevance&media=all'
         self.driver.get(base_url)
         
     def _wait_until_search_list_visible(self):
         wait = WebDriverWait(self.driver, timeout=self.wait_time)
         wait.until(EC.visibility_of_element_located(
-            (By.CLASS_NAME, "row-flex")),
-            message="Timed out. Couldn't find \"Row Flex\".")
+            (By.CLASS_NAME, "contentListCards")),
+            message="Timed out. Couldn't find \"Content List Cards\".")
         
     def _save_info(self):
-        row_flex = self.driver.find_element(By.CLASS_NAME, "row-flex")
-        elements = row_flex.find_elements(By.CLASS_NAME, "article-excerpt-default__link")
+        content_list = self.driver.find_element(By.CLASS_NAME, "contentListCards")
+        elements = content_list.find_elements(By.CLASS_NAME, "cardListing")
         links = self._get_links(elements)
         self._scrap_data_from_links(links)
         
@@ -54,9 +54,16 @@ class MoscowTimesScraper(ReutersScraper):
     
     def _click_load_more_button(self):
         try:
-            load_more_button = self.driver.find_element(By.CLASS_NAME, "button")
+            notice_button = self.driver.find_element(By.CLASS_NAME, "noticeButton")
+            notice_button.click()
+        except NoSuchElementException:
+            pass
+        
+        try:
+            load_more_button = self.driver.find_element(By.CLASS_NAME, "loadMore")
             ActionChains(self.driver).scroll_to_element(load_more_button).perform()
             load_more_button.click()
+            time.sleep(10)
         except NoSuchElementException:
             print("Load more button not found!")
             raise NoSuchElementException
