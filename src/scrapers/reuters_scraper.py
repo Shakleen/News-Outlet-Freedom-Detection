@@ -34,6 +34,7 @@ class ReutersScraper:
         if os.path.exists(self.save_file_path):
             df = pd.read_csv(self.save_file_path)
             self.unique_links = set(df.url.to_list())
+            del df
         
     def get_urls(self):
         self._load_website()
@@ -60,9 +61,14 @@ class ReutersScraper:
         self._scrap_data_from_links(links)
         
         time.sleep(random.randint(self.pause_min, self.pause_max))
-        
-        elapsed_minutes = (time.time() - self.start) / 60
-        print(f"[{elapsed_minutes:>10.2f}m] Total saved so far: {self.saved}")
+        self._print_elapsed_time()
+
+    def _print_elapsed_time(self):
+        elapsed = (time.time() - self.start)
+        s = int(elapsed % 60)
+        m = int(((elapsed - s) // 60) % 60)
+        h = int((elapsed - m * 60 - s) // 3600)
+        print(f"[{h:02}h {m:02}m {s:02}s] Total saved so far: {self.saved}")
 
     def _get_links(self, content_list):
         links = []
@@ -96,6 +102,7 @@ class ReutersScraper:
                 self.save_file_path, 
                 header=not os.path.exists(self.save_file_path),
                 mode="a", index=False)
+        del dict
 
     def _get_link(self, content):
         link = ""

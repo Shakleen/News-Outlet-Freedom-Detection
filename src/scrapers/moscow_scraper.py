@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import pandas as pd
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common import NoSuchElementException
@@ -19,6 +20,11 @@ class MoscowTimesScraper(ReutersScraper):
                  pause_max: int = 10):
         super().__init__(search_term, wait_time, total, pause_min, pause_max)
         self.save_file_path = os.path.join("data", f"moscow_times.csv")
+        
+        if os.path.exists(self.save_file_path):
+            df = pd.read_csv(self.save_file_path)
+            self.unique_links = set(df.url.to_list())
+            del df
     
     def _load_website(self):
         base_url = 'https://www.themoscowtimes.com/news'
@@ -37,9 +43,7 @@ class MoscowTimesScraper(ReutersScraper):
         self._scrap_data_from_links(links)
         
         time.sleep(random.randint(self.pause_min, self.pause_max))
-        
-        elapsed_minutes = (time.time() - self.start) / 60
-        print(f"[{elapsed_minutes:>10.2f}m] Total saved so far: {self.saved}")
+        self._print_elapsed_time()
         
     def _get_links(self, elements):
         links = []
