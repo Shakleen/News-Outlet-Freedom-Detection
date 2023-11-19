@@ -1,30 +1,25 @@
 import os
 import time
 import random
-import pandas as pd
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common import NoSuchElementException
+from selenium.common import MoveTargetOutOfBoundsException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
 
-from .reuters_scraper import ReutersScraper
+from .base_scraper import BaseScraper
 
-class GNScraper(ReutersScraper):
-    def __init__(self, 
-                 search_term: str = "", 
+class GNScraper(BaseScraper):
+    def __init__(self,  
                  wait_time: int = 30, 
                  total: int = 100000, 
                  pause_min: int = 1, 
                  pause_max: int = 10):
-        super().__init__(search_term, wait_time, total, pause_min, pause_max)
+        super().__init__(wait_time, total, pause_min, pause_max)
         self.save_file_path = os.path.join("data", "global-news.csv")
-        
-        if os.path.exists(self.save_file_path):
-            df = pd.read_csv(self.save_file_path)
-            self.unique_links = set(df.url.to_list())
-            del df
+        self._populate_unique_links()
     
     def _load_website(self):
         base_url = 'https://globalnews.ca/?s=canada'
@@ -63,11 +58,16 @@ class GNScraper(ReutersScraper):
         except NoSuchElementException:
             pass
         
-        try:
-            load_more_button = self.driver.find_element(By.ID, "load-more-results")
-            ActionChains(self.driver).scroll_to_element(load_more_button).perform()
-            load_more_button.click()
-            time.sleep(random.randint(self.pause_min, self.pause_max))
-        except NoSuchElementException:
-            print("Load more button not found!")
-            raise NoSuchElementException
+        for _ in range(5):
+            try:
+                load_more_button = self.driver.find_element(By.ID, "load-more-results")
+                ActionChains(self.driver).scroll_to_element(load_more_button).perform()
+                load_more_button.click()
+                time.sleep(random.randint(self.pause_min, self.pause_max))
+                break
+            except NoSuchElementException:
+                print("Load more button not found!")
+            except MoveTargetOutOfBoundsException:
+                print("Load More button moved.")
+            
+            time.sleep(random.randint(3, 5))

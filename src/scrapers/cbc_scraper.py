@@ -1,7 +1,6 @@
 import os
 import time
 import random
-import pandas as pd
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common import NoSuchElementException
@@ -9,22 +8,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
 
-from .reuters_scraper import ReutersScraper
+from .base_scraper import BaseScraper
 
-class CBCScraper(ReutersScraper):
+class CBCScraper(BaseScraper):
     def __init__(self, 
-                 search_term: str = "", 
                  wait_time: int = 30, 
                  total: int = 100000, 
                  pause_min: int = 1, 
                  pause_max: int = 10):
-        super().__init__(search_term, wait_time, total, pause_min, pause_max)
-        self.save_file_path = os.path.join("data", f"cbc.csv")
-        
-        if os.path.exists(self.save_file_path):
-            df = pd.read_csv(self.save_file_path)
-            self.unique_links = set(df.url.to_list())
-            del df
+        super().__init__(wait_time, total, pause_min, pause_max)
+        self.save_file_path = os.path.join("data", "cbc.csv")
+        self._populate_unique_links()
     
     def _load_website(self):
         base_url = 'https://www.cbc.ca/search?q=canada&section=news&sortOrder=relevance&media=all'

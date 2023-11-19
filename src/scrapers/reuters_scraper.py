@@ -1,48 +1,23 @@
 import random
 import time
 import os
-import pandas as pd
-from newsplease import NewsPlease
-from collections import defaultdict
 
-from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+from .base_scraper import BaseScraper
 
-class ReutersScraper:
+class ReutersScraper(BaseScraper):
     def __init__(self, 
                  search_term: str,
                  wait_time: int = 30, total: int = 1e5,
                  pause_min: int = 1, pause_max: int = 10):
-        options = webdriver.ChromeOptions()
-        options.binary_location = r"D:\Studying\UoR\1. Data Mining\Final_Project\chromedriver.exe"
-        self.driver = webdriver.Chrome(keep_alive=True, options=options)
-        self.wait_time = wait_time
+        super().__init__(wait_time, total, pause_min, pause_max)
         self.save_file_path = os.path.join("data", f"reuters_{search_term}.csv")
-        self.saved = 0
-        self.total = total
-        self.pause_min = pause_min
-        self.pause_max = pause_max
-        self.start = time.time()
-        self.search_term = search_term
-        self.unique_links = set()
-        
-        if os.path.exists(self.save_file_path):
-            df = pd.read_csv(self.save_file_path)
-            self.unique_links = set(df.url.to_list())
-            del df
-        
-    def get_urls(self):
-        self._load_website()
-        self._wait_until_search_list_visible()
-        
-        while self.saved < self.total:
-            self._save_info()
-            self._click_load_more_button()
+        self._populate_unique_links()
 
     def _click_load_more_button(self):
         try:
@@ -62,14 +37,7 @@ class ReutersScraper:
         
         time.sleep(random.randint(self.pause_min, self.pause_max))
         self._print_elapsed_time()
-
-    def _print_elapsed_time(self):
-        elapsed = (time.time() - self.start)
-        s = int(elapsed % 60)
-        m = int(((elapsed - s) // 60) % 60)
-        h = int((elapsed - m * 60 - s) // 3600)
-        print(f"[{h:02}h {m:02}m {s:02}s] Total saved so far: {self.saved}")
-
+    
     def _get_links(self, content_list):
         links = []
         
@@ -80,29 +48,6 @@ class ReutersScraper:
                 links.append(link)
                 
         return links
-
-    def _scrap_data_from_links(self, links):
-        try:
-            article = NewsPlease.from_urls(links, self.wait_time)
-            self._save_articles(article)
-        except Exception:
-            pass
-
-    def _save_articles(self, article):
-        dict = defaultdict(list)
-            
-        for data in article.values():
-            for key, value in data.get_dict().items():
-                dict[key].append(value)
-                
-        self.unique_links |= set(dict["url"])
-        self.saved = len(self.unique_links)
-            
-        pd.DataFrame.from_dict(dict).to_csv(
-                self.save_file_path, 
-                header=not os.path.exists(self.save_file_path),
-                mode="a", index=False)
-        del dict
 
     def _get_link(self, content):
         link = ""
@@ -125,6 +70,4 @@ class ReutersScraper:
         wait.until(EC.visibility_of_element_located(
             (By.CLASS_NAME, "search-result-list")),
             message="Timed out. Couldn't find search result.")
-        
-    def finish(self):
-        self.driver.quit()
+    
