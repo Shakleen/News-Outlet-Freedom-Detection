@@ -16,7 +16,8 @@ class ReutersScraper(BaseScraper):
                  wait_time: int = 30, total: int = 1e5,
                  pause_min: int = 1, pause_max: int = 10):
         super().__init__(wait_time, total, pause_min, pause_max)
-        self.save_file_path = os.path.join("data", f"reuters_{search_term}.csv")
+        self.search_term = search_term
+        self.save_file_path = os.path.join("data", f"reuters_{self.search_term}.csv")
         self._populate_unique_links()
 
     def _click_load_more_button(self):
