@@ -5,13 +5,8 @@ from .base_cleaner import BaseCleaner
 
 class ReutersCleaner(BaseCleaner):
     def process(self):
-        self.impute()
         self.process_text()
         self.process_rows()
-        
-    def impute(self):
-        self.data.fillna("", inplace=True)
-        print(self.data.info())
 
     def process_text(self):
         funcs = [self.discard_reporting_by,

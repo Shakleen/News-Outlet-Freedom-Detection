@@ -16,8 +16,13 @@ class BaseCleaner:
         print(f"Data shape: {self.data.shape}")
         
     def __call__(self):
+        self.impute()
         self.process()
         self.save()
+        
+    def impute(self):
+        self.data.fillna("", inplace=True)
+        print(self.data.info())
         
     def process(self):
         raise NotImplementedError
