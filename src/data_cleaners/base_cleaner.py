@@ -28,6 +28,7 @@ class BaseCleaner:
         raise NotImplementedError
         
     def save(self):
+        print(self.data.info())
         self.data.to_csv(self.save_path, index=None)
         
     def get_matches(self, text, phrase):

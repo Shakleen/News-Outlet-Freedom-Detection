@@ -1,3 +1,4 @@
+import re
 import numpy as np
 
 from .base_cleaner import BaseCleaner
@@ -5,6 +6,7 @@ from .base_cleaner import BaseCleaner
 class MoscowTimesCleaner(BaseCleaner):
     def process(self):
         self.data.maintext = self.data.maintext.apply(self.remove_links)
+        self.data.maintext = self.data.maintext.apply(lambda x: re.sub(r'\s+', ' ', x).strip())
         self.drop_zero_lengths()
         self.drop_unrelated_geo_news()
         self.drop_short_news()
