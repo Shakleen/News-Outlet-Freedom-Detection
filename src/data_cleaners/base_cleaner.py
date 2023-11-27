@@ -17,6 +17,7 @@ class BaseCleaner:
         
     def __call__(self):
         self.impute()
+        self.drop_duplicates()
         self.process()
         self.save()
         
@@ -54,6 +55,9 @@ class BaseCleaner:
         
     def remove_links(self, text):
         return re.sub(r'http\S+|www.\S+', '', text)
+    
+    def drop_duplicates(self):
+        self.data.drop_duplicates(inplace=True, subset=['date_publish', 'title'])
         
 if __name__ == "__main__":
     file_path = r"D:\Studying\UoR\1. Data Mining\Final_Project\data\reuters_canada.csv"

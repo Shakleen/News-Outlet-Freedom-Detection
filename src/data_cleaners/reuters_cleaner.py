@@ -13,7 +13,8 @@ class ReutersCleaner(BaseCleaner):
                  self.remove_links,
                  self.remove_read_more,
                  self.discard_initial_location_and_date,
-                 lambda x: re.sub(r'\s+', ' ', x)]
+                 self.discard_initial_breaking_news,
+                 lambda x: re.sub(r'\s+', ' ', x).strip()]
         
         print("Started text processing")
         
@@ -36,6 +37,14 @@ class ReutersCleaner(BaseCleaner):
     
     def discard_initial_location_and_date(self, text):
         position = self.find_first_instance(text, "\(Reuters\) - ")
+        
+        if position is None:
+            return text
+        
+        return text[position[1]:]
+    
+    def discard_initial_breaking_news(self, text):
+        position = self.find_first_instance(text, "\(Reuters Breakingviews\) - ")
         
         if position is None:
             return text
