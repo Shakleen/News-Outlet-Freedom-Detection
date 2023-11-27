@@ -56,6 +56,10 @@ class BaseCleaner:
     def remove_links(self, text):
         return re.sub(r'http\S+|www.\S+', '', text)
     
+    def remove_emails(self, text):
+        email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        return re.sub(email_regex, '', text)
+    
     def drop_duplicates(self):
         self.data.drop_duplicates(inplace=True, subset=['date_publish', 'title'])
         
