@@ -110,22 +110,6 @@ class APCleaner(BaseCleaner):
             
         return False
     
-    def drop_short_news(self):
-        temp = self.data.loc[:, ["maintext", "title"]]\
-            .apply(lambda row: [len(col.split()) for col in row])
-        main_to_drop = self.low_outliers(temp.maintext)
-        title_to_drop = self.low_outliers(temp.title)
-        cond = main_to_drop | title_to_drop
-        self.data.drop(temp[cond].index, inplace=True)
-            
-    def low_outliers(self, temp):
-        q1 = np.quantile(temp, 0.25)
-        q3 = np.quantile(temp, 0.75)
-        iqr = q3 - q1
-        span = 1.5 * iqr
-        low = np.floor(q1 - span)
-        return (temp < low)
-    
     
 class APCanada(APCleaner):
     def drop_unrelated_geo_news(self):

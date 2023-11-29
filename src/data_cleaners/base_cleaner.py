@@ -2,6 +2,7 @@ from typing import List
 import re
 import os
 import pandas as pd
+import numpy as np
 
 class BaseCleaner:
     def __init__(self,
@@ -19,6 +20,8 @@ class BaseCleaner:
         self.impute()
         self.drop_duplicates()
         self.process()
+        self.data.maintext = self.data.maintext.map(
+            lambda x: re.sub(r'[^\x00-\x7F]+', '', x))
         self.save()
         
     def impute(self):
@@ -62,6 +65,21 @@ class BaseCleaner:
     
     def drop_duplicates(self):
         self.data.drop_duplicates(inplace=True, subset=['date_publish', 'title'])
+    
+    def drop_short_news(self):
+        temp = self.data.loc[:, ["maintext", "title"]]\
+            .apply(lambda row: [len(col.split()) for col in row])
+        cond = self.outliers(temp.title)
+        self.data.drop(temp[cond].index, inplace=True)
+            
+    def outliers(self, temp):
+        q1 = np.quantile(temp, 0.25)
+        q3 = np.quantile(temp, 0.75)
+        iqr = q3 - q1
+        span = 1.5 * iqr
+        low = np.floor(q1 - span)
+        high = np.ceil(q3 + span)
+        return (temp <= low) | (temp >= high)
         
 if __name__ == "__main__":
     file_path = r"D:\Studying\UoR\1. Data Mining\Final_Project\data\reuters_canada.csv"
