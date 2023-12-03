@@ -1,24 +1,21 @@
 import re
-import pandas as pd
 
 
 class ParseCSV:
-    def __call__(self, file_path: str):
-        df = pd.read_csv(file_path)
-        
-        df["sentiment_class"] = df.answer.map(
+    def __call__(self, df):
+        df["sentiment_class"] = df.generated_text.map(
             lambda x: self.get_category(x, "Sentiment:.+\n"))
-        df["stance_class"] = df.answer.map(
+        df["stance_class"] = df.generated_text.map(
             lambda x: self.get_category(x, "Stance:.+\n"))
         
-        df["sentiment_score"] = df.answer.map(
+        df["sentiment_score"] = df.generated_text.map(
             lambda x: self.get_score(x, 0))
-        df["stance_score"] = df.answer.map(
+        df["stance_score"] = df.generated_text.map(
             lambda x: self.get_score(x, 1))
         
-        df["sentiment_reason"] = df.answer.map(
+        df["sentiment_reason"] = df.generated_text.map(
             lambda x: self.get_reason(x, 0))
-        df["stance_reason"] = df.answer.map(
+        df["stance_reason"] = df.generated_text.map(
             lambda x: self.get_reason(x, 1))
         
         return df
@@ -47,4 +44,7 @@ class ParseCSV:
         if matches is None:
             return None
         
-        return float(text[matches[id].start() : matches[id].end()].split()[-1])
+        try:
+            return float(text[matches[id].start() : matches[id].end()].split()[-1])
+        except Exception:
+            return None

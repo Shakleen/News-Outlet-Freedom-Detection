@@ -3,3 +3,4 @@
 **/chromedriver.exe
 **/data
 **/.ipynb_checkpoints
+**/model_dir
