@@ -1,0 +1,153 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Article %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Using Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{empheq}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{psfrag}
+\usepackage{pgfplots}
+\usepackage{bm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Other Settings
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Page Setting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\geometry{a4paper}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Define some useful colors %%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{ocre}{RGB}{243,102,25}
+\definecolor{mygray}{RGB}{243,243,244}
+\definecolor{deepGreen}{RGB}{26,111,0}
+\definecolor{shallowGreen}{RGB}{235,255,255}
+\definecolor{deepBlue}{RGB}{61,124,222}
+\definecolor{shallowBlue}{RGB}{235,249,255}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Define an orangebox command %%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\orangebox[1]{\fcolorbox{ocre}{mygray}{\hspace{1em}#1\hspace{1em}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% English Environments %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheoremstyle{mytheoremstyle}{3pt}{3pt}{\normalfont}{0cm}{\rmfamily\bfseries}{}{1em}{{\color{black}\thmname{#1}~\thmnumber{#2}}\thmnote{\,--\,#3}}
+\newtheoremstyle{myproblemstyle}{3pt}{3pt}{\normalfont}{0cm}{\rmfamily\bfseries}{}{1em}{{\color{black}\thmname{#1}~\thmnumber{#2}}\thmnote{\,--\,#3}}
+\theoremstyle{mytheoremstyle}
+\newmdtheoremenv[linewidth=1pt,backgroundcolor=shallowGreen,linecolor=deepGreen,leftmargin=0pt,innerleftmargin=20pt,innerrightmargin=20pt,]{theorem}{Theorem}[section]
+\theoremstyle{mytheoremstyle}
+\newmdtheoremenv[linewidth=1pt,backgroundcolor=shallowBlue,linecolor=deepBlue,leftmargin=0pt,innerleftmargin=20pt,innerrightmargin=20pt,]{definition}{Definition}[section]
+\theoremstyle{myproblemstyle}
+\newmdtheoremenv[linecolor=black,leftmargin=0pt,innerleftmargin=10pt,innerrightmargin=10pt,]{problem}{Problem}[section]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Plotting Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepgfplotslibrary{colorbrewer}
+\pgfplotsset{width=8cm,compat=1.9}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Title & Author %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Freedom of Press Among World Nations}
+\author{Shakleen Ishfar \and Eugene Ayonga}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+    \maketitle
+
+    \section{Introduction}
+
+    There are many news organizations around the world. News organizations play a vital role in relaying important news of home and abroad to its readers. These news often cover incidents that are either positive, negative, or neutral. Moreover, some news stories can be viewed as talking for a country or talking against it. 
+
+    Freedom of speech is the right to express ideas and opinions without censorship, restraint, or fear of retribution. A news outlet is free if it can report news in an unbiased manner and free from censorship. In this project, we aim to detect if a local news organization is free. To do so, we compare the sentiment and stance of the organization with international news reporting institutions \textbf{Reuters} and \textbf{Associated Press}. We assume that the more similar a local news is, in terms of sentiment and stance, to the international media outlets, the more free it is. 
+    
+    In summary, this study investigates freedom of speech in local news across countries, examining topic-specific distinctions by comparing sentiment and stance scores with international sources to reveal distinctions and assess agreement levels.
+
+    \section{Related Work}
+    % TODO: Cite similar works
+
+    \section{Methodology}
+
+    The methodlogy of our study can be summarized as follows:
+
+    \begin{enumerate}
+        \item \textbf{Data Accumulation}: Select countries to study and collect local-international news articles specific to these countries.
+        \item \textbf{Data Processing}: We prepared the data for analysis by performing text processing.
+        \item \textbf{Topic Modeling}: To compare relevant news articles from both sources we need to first find the topics and categorize news into these topics.
+        \item \textbf{Sentiment and stance analysis}: For each news article, we need to find its sentiment and stance. Specifically, by sentiment, we mean whether a news is positive or neutral or negative. And by stance, we mean whether the news is in support of the local nation or impartial or against it.
+        \item \textbf{Hypothesis testing}: Finally, we perform hypothesis testing on the sentiment and stance score for both source of news. This allows us to come to statistically significant conclusions.
+    \end{enumerate}
+
+    \subsection{Data Acquisition}
+
+    For this study, we decided to move forward with three countries, Canada, China, and Russia. The countries were picked based on political inclinations. For each of these countries, we collected news from local and international sources. Table \ref{table:data_sources} presents our data sources for each countries.
+
+    \begin{table}[ph]
+        \centering
+        \begin{tabular}{|c|l|l|l|}
+            \hline
+            Source Type & Canada & China & Russia \\
+            \hline
+            Local & Global News & China Daily & The Moscow Times \\
+            \hline
+            International & \multicolumn{3}{c|}{Reuters and Associated Press} \\
+            \hline
+        \end{tabular}
+        \caption{Data sources for countries under study}
+        \label{table:data_sources}
+    \end{table}
+
+    We used \emph{Selenium} and \emph{News Please} to collect our news corpus. In particular, we crawled news websites using Selenium and collected articles URLs. Afterwards, we scraped article data using \emph{News Please}. News Please gives us a lot of data about the articles. \cite{Hamborg2017} The following are properties of interest for our study:
+
+    \begin{enumerate}
+        \item \textbf{Title}: The title of the articles.
+        \item \textbf{Description}: A short description of the article. Typically, the subheading of the article.
+        \item \textbf{Maintext}: The body of the article.
+        \item \textbf{Publication Date}: When the article was published.
+    \end{enumerate}
+
+    \subsection{Data Processing}
+
+    To prepare the data for topic modeling and sentiment-stance analysis we had to process the dataset. This inlcludes the following:
+
+    \begin{enumerate}
+        \item \textbf{Imputation}: Many of the URLs scraped by News Please, some attributes were null. The first step was filling in those values. We chose to replace null text columns with empty strings.
+        \item \textbf{Duplicate removal}: In this step, we detected duplicate article data and removed them. In particular, we detected duplicates by comparies the \emph{publication data} and \emph{title} attributes.
+        \item \textbf{Text level processing} \begin{itemize}
+            \item Remove HTML tags, links, emails, phone numbers, etc.
+            \item Discard editorial information, e.g. "Published by Global News".
+            \item Strip non-ASCII characters.
+            \item Remove editorial information, e.g. written by X, photo by Y, etc.
+        \end{itemize}
+        \item \textbf{Row level processing} \begin{itemize}
+            \item Drop rows with empty titles and maintext.
+            \item Filter out unrelated geographical news.
+            \item Remove rows where the maintext is too short.
+        \end{itemize}
+        \item \textbf{Country level processing} \begin{itemize}
+            \item Global news in particular reports inflation news. This sort of articles don't have a lot of text and is strictly tabular. We decided not to include this sort of news in our analysis.
+            \item Removed Israel-Palestine from all country news corpus. As they are not relevant to the countries being studied.
+        \end{itemize}
+    \end{enumerate}
+
+    \subsection{Topic Modeling}
+
+    \subsection{Sentiment and Stance Analysis}
+
+    \subsection{Hypothesis Testing}
+
+    \section{Experiment}
+
+    \section{Conclusion}
+
+    \bibliographystyle{plain}
+    \bibliography{references}
+
+    
+\end{document}
