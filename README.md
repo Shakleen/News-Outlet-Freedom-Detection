@@ -49,8 +49,7 @@ This study investigates freedom of speech in local news across countries, examin
 * Employed News Please to fetch article data from collected URLs.
 * Raw data was processed to get it ready for the text mining steps.
 
-![Data Distribution](images\plots\barchart_scraped_data.png)
-
+<center><img src=".\images\plots\barchart_scraped_data.png" alt="drawing" width="600"/></center>
 <p align="right">(<a href="#news-outlet-freedom-detection">back to top</a>)</p>
 
 ## BERTopic
@@ -67,7 +66,7 @@ I used BERTopic to perform topic modeling. BERTopic has 4 distinct phases:
 
 5. Fed top 10 represention words for each topic into ChatGPT to get a word for custom topic name.
 
-![BERTopic](images\BERTopic_diagram.png)
+<center><img src=".\images\BERTopic_diagram.png" alt="drawing" width="600"/></center>
 
 <p align="right">(<a href="#news-outlet-freedom-detection">back to top</a>)</p>
 
@@ -128,15 +127,30 @@ I used LLaMa-2, the open-source LLM from meta, for sentiment and stance analysis
 
 ### Canada
 
-![Canadian News Topic Distribution](images\plots\Canada\canada_barchart_topics.png)
+<center><img src=".\images\plots\Canada\canada_barchart_topics.png" alt="drawing" width="600"/></center>
 
-![Canadian News Sentiment Score Distribution](images\plots\Canada\canada_boxplot_sentiment.png)
+#### Sentiment Analysis
+<center><img src=".\images\plots\Canada\canada_boxplot_sentiment.png" alt="drawing" width="600"/></center>
+<center><img src=".\images\plots\Canada\canada_heatmap_inference_sentiment.png" alt="drawing" width="600"/></center>
 
-![Canadian News Sentiment Score inference results](images\plots\Canada\canada_heatmap_inference_sentiment.png)
+* On average has different sentiment from btoh sources.
+    * **Crime**
+    * **Weather** and **Transportation** also but they don't have enough data from both sources.
 
-![Canadian News Stance Score Distribution](images\plots\Canada\canada_boxplot_stance.png)
+* **National-security** sentiment from both sources is correlated.
+    * So is **telecommunications** but only according to Spearman.
 
-![Canadian News Stance Score inference results](images\plots\Canada\canada_heatmap_inference_stance.png)
+#### Stance Analysis
+<center><img src=".\images\plots\Canada\canada_boxplot_stance.png" alt="drawing" width="600"/></center>
+<center><img src=".\images\plots\Canada\canada_heatmap_inference_stance.png" alt="drawing" width="600"/></center>
+
+* **Sports** and **Crime** has different stances on average.
+* **Conflict** news stance is correlated.
+* **Finance** news seems to have a different variation in stance scores.
+
+#### Verdict
+
+Overall, the inference result heatmap is mostly black, meaning most of the time the null hypothesis holds true. Which means we fail to identify statistically significant distinctions. Thus, canadian news outlet has freedom of speach.
 
 ### China
 
