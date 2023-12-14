@@ -269,7 +269,7 @@
     For sentiment and stance analysis, we decided to use a Large Language Model (LLM). 
     
     \subsubsection{Utilization of LLM}
-    LLMs are excellent for natural language understanding and generation tasks. We used these capabilities of an LLM in the following way:
+    LLMs are excellent for natural language understanding and generation tasks. \cite{boiko2023emergent} We used these capabilities of an LLM in the following way:
 
     \begin{enumerate}
         \item \textbf{Classification}: Classify the document's sentiment as positive or negative or neutral. Classify the stance as for or neutral or against the local country.
@@ -277,7 +277,7 @@
         \item \textbf{Reason}: The LLM gives a short one sentence reason behind its classification and scoring.
     \end{enumerate}
 
-    We decided to use the open-source \textbf{LLaMa-2} model, from \emph{Meta}. For our training and inference pipeline we heavily relied on \emph{HuggingFace}.
+    We decided to use the open-source \textbf{LLaMa-2} model, from \emph{Meta}. For our training and inference pipeline we heavily relied on \emph{HuggingFace}. \cite{touvron2023llama}
 
     \subsubsection{Finetune LLaMa-2}
 
@@ -382,23 +382,10 @@ Output format:
         \label{fig:canada_sentiment_score_heatmap}
     \end{figure}
 
-    We can see that
-
     \begin{itemize}
         \item \emph{Crime}, \emph{transportation}, and \emph{weather} is statistically significant in terms of Welch and Wilcoxon test. Which means that on average the sentiment scores from both sources are different. This means both sources typically report news that are of different sentiment.
         \item \emph{National-security} is statistically significant in terms of Pearson's and Spearman's test. Which means the score of the two sources aren't independent of each other. There exists some sort of a correlation or monotonic relationship. This means that the two sources report news that are somewhat related. 
     \end{itemize}
-
-    Let's look at a wordcloud for \emph{Crime} related news from both sources in figure \ref{fig:canada_sentiment_score_wordcloud}.
-
-    \begin{figure}[hp]
-        \centering
-        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_wordcloud_crime.png}
-        \caption{Word cloud for canadian news about crime.}
-        \label{fig:canada_sentiment_score_wordcloud}
-    \end{figure}
-
-    We can see that local and international media use the same sort of words across their negative and positive sentiment news. For example, the word police, fire, government appears in the negative sentiment word cloud for both sources. On the other hand, indigenous community, first, fire, etc. are common in the positive sentiment.
 
     \subsubsection{Stance Analysis}
 
@@ -426,13 +413,109 @@ Output format:
         \item Interestingly, \emph{Finance} news has a different variance for stance scores. This means, the two sources cover a different range of stances.
     \end{itemize}
 
+    \subsubsection{Text Analysis}
+
+    Let's look at a wordcloud for \emph{Crime} related news from both sources in figure \ref{fig:canada_sentiment_score_wordcloud}.
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_wordcloud_crime.png}
+        \caption{Word cloud for canadian news about crime.}
+        \label{fig:canada_sentiment_score_wordcloud}
+    \end{figure}
+
+    We can see that local and international media use the same sort of words across their negative and positive sentiment news. For example, the word police, fire, government appears in the negative sentiment word cloud for both sources. On the other hand, indigenous community, first, fire, etc. are common in the positive sentiment.
+
     \subsubsection{Verdict}
 
     Although there is statistically significant distinctions in sentiment for a few topics, both sources report news that are similar in sentiment and stance. Which is why, we find canadian news organization "Global News" as a free press organization.
     
     \subsection{China}
 
+    Let us now look at Chinese news media outlet. Figure \ref{fig:china_topic} shows the distribution of news amongst different topics from both sources. It's clear that both sources publish more news about \emph{politics} than any other topic. The international media also publishes more news about \emph{finance} and \emph{international-relations} than the local news media as well. However, \emph{agriculture} related news is covered mostly by local news outlet.
+    
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/China/china_barchart_topics.png}
+        \caption{Chinese news topics bar chart.}
+        \label{fig:china_topic}
+    \end{figure}
+
+    \subsubsection{Sentiment Analysis}
+
+    Figure \ref{fig:china_sentiment_score_boxplot} shows the distribution of sentiment scores for various topics for local and international media. 
+    
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/China/china_boxplot_sentiment.png}
+        \caption{Boxplot showing the topicwise distribution of chinese news sentiment scores for local and international media outlets.}
+        \label{fig:china_sentiment_score_boxplot}
+    \end{figure}  
+
+    One of the most interesting observation is that, the local media in most cases always seems to cover positive sentiment news. Except for a few outliers, their distribution is concentrated towards positive scores. On the other hand, international news covers a wide spectrum of sentiment. 
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/China/china_heatmap_inference_sentiment.png}
+        \caption{Heatmap showing the result of topicwise inference tests done on chinese news sentiment scores.}
+        \label{fig:china_sentiment_score_heatmap}
+    \end{figure}
+
+    Figure \ref{fig:china_sentiment_score_heatmap} confirms the distinction we saw in the sentiment score distribution. Not only does most topic have on average a different sentiment score, they also have a very different score variance as well. Safe to say that the local and international media cover very different set of news when it comes to sentiment.
+    
+    \subsubsection{Stance Analysis}    
+
+    From figure \ref{fig:china_stance_score_boxplot}, we observe a similar trend. Local news seem to trend towards pro-china stance while international media is mostly impartial, except for a few outliers. However, local news media seem to cover a few against china news when it comes to \emph{politics} and \emph{international-relations}. On the other hand, \emph{environment} is covered in an impartial to slightly more against-china stance by the international news media.
+    
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/China/china_boxplot_stance.png}
+        \caption{Boxplot showing the topicwise distribution of chinese news stance scores for local and international media outlets.}
+        \label{fig:china_stance_score_boxplot}
+    \end{figure}
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/China/china_heatmap_inference_stance.png}
+        \caption{Heatmap showing the result of topicwise inference tests done on chinese news stance scores.}
+        \label{fig:china_stance_score_heatmap}
+    \end{figure}
+
+    Our observations are confirmed when we see the hypothesis tests results in figure \ref{fig:china_stance_score_heatmap}. Most of the topics, except for \emph{enviornment}, have a statistically significant difference in stance scores. The only reason we don't have a statistically significant difference is that we don't have enough data for this topic. We can also see than most topics are also independent as they are not significant in terms of pearson's and spearman's correlation.
+
+    \subsubsection{Text Analysis}
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/China/china_wordcloud_politics.png}
+        \caption{Word cloud for chinese news about politics.}
+        \label{fig:chinese_sentiment_score_wordcloud}
+    \end{figure}
+
+    The word cloud for \emph{politics} is shown in figure \ref{fig:chinese_sentiment_score_wordcloud}. Unlike the wordcloud for canadian news, there are less things in common here. For example, in international news, \emph{Beijing}, \emph{government}, and \emph{official} is highlighted in the negative news. While for local news, \emph{US}, \emph{law}, and \emph{court} are highlighted more in the negative sentiment news. International media also talks a lot about \emph{Beijing} and \emph{government} in positive light as well. But the local media seems to talk about \emph{CPC} and \emph{Central Committee} more. Interesting to see that the local media barely has any mention of \emph{Beijing} when the international media is talking about it so much.
+
+    \subsubsection{Verdict}
+
+    There seem to be a lot of dissimilarity when it comes to local news media outlet, "China Daily", and the international news media outlets. Statistically significant differences can be found across most topics. Which is why, we fail to say "China Daily" has freedom of press based on the news samples we have collected.
+
     \subsection{Russia}
+
+    Finally, we analyze russian news. Figure \ref{fig:russia_topic} shows the distribution of news covered by both local and international media outlets. An interesting observation is that both sources publish more news about \emph{politics} than all other topics combined. Moreover, local news covers more about \emph{health} related news, while international news dives more into the ongoing \emph{conflict} news.
+    
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Russia/russia_barchart_topics.png}
+        \caption{Russian news topics bar chart.}
+        \label{fig:russia_topic}
+    \end{figure}
+
+    \subsubsection{Sentiment Analysis}
+
+    \subsubsection{Stance Analysis}
+    
+    \subsubsection{Text Analysis}
+
+    \section{Limitations}
 
     \section{Conclusion}
 
