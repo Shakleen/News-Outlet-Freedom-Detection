@@ -510,14 +510,76 @@ Output format:
     \end{figure}
 
     \subsubsection{Sentiment Analysis}
+    
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Russia/russia_boxplot_sentiment.png}
+        \caption{Boxplot showing the topicwise distribution of russian news sentiment scores for local and international media outlets.}
+        \label{fig:russia_sentiment_score_boxplot}
+    \end{figure}  
+
+    From figure \ref{fig:russia_sentiment_score_boxplot} we can see that, unlike chinese news, there are less distinctions in the distribution of the news articles from both sources. \emph{Health} related news seems to be more negative in local media, while the international media is more neutrally distributed. Both new media organizations seem to convey a similar negative sentiment when it comes to \emph{conflict} and \emph{politics}.
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Russia/russia_heatmap_inference_sentiment.png}
+        \caption{Heatmap showing the result of topicwise inference tests done on russian news sentiment scores.}
+        \label{fig:russia_sentiment_score_heatmap}
+    \end{figure}
+
+    A more interesting observation comes from the statistical test as graphed in figure \ref{fig:russia_sentiment_score_heatmap}. There seems to be a statistically significant difference on the average and median sentiment score between the two sources. 
 
     \subsubsection{Stance Analysis}
     
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Russia/russia_boxplot_stance.png}
+        \caption{Boxplot showing the topicwise distribution of russian news stance scores for local and international media outlets.}
+        \label{fig:russia_stance_score_boxplot}
+    \end{figure} 
+
+    The stance scores for both sources seem to be mostly impartial. Except for \emph{Health} related news, where the international media seems to be trendly slightly towards a pro-russian stance.
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Russia/russia_heatmap_inference_stance.png}
+        \caption{Heatmap showing the result of topicwise inference tests done on russian news stance scores.}
+        \label{fig:russia_stance_score_heatmap}
+    \end{figure}
+
+    The inference tests for stance, tells the same story as that of the sentiment. Political news on average has different stances from both sources. Interestingly, \emph{conflict} related news has a statistically significant difference in variance. Meaning, local and international news doesn't cover the same range of stance when it comes to this topic. Also, \emph{sports} news has a monotonic relationship between the two sources.
+
     \subsubsection{Text Analysis}
+
+    Analyzing the word clouds shown in figure \ref{fig:russian_sentiment_score_wordcloud}, we can see that \emph{Ukrain} is a huge talking point across all sentiments regardless of the source. \emph{Putin} also comes up more in local news while \emph{United States} and \emph{China} comes up a lot in international news. In particular, the US seems to be associated more with negative sentiment while China is associated with more positive sentiment. This could indicate the alliance Russia has with China and the animosity it has with the US. Overall, the distinctions in textual content isn't quite as clear as with chinese news.
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Russia/russia_wordcloud_politics.png}
+        \caption{Word cloud for russian news about politics.}
+        \label{fig:russian_sentiment_score_wordcloud}
+    \end{figure}
+
+    \subsubsection{Verdict}
+
+    Overall, we fail to find distinctions across all topics. This is mainly due to the lack of sufficient data for topics other than \emph{politics}. As a result, we are unsure, as to whether "The Moscow Times" has freedom of press or not. From the sample data we have, it seems like the local outlet mostly agrees with the international outlets. However, due to limited samples for other topics, we can't say this with certainty.
 
     \section{Limitations}
 
+    \begin{enumerate}
+        \item The biggest limitation is the lack of a sufficiently large dataset. For \emph{Russia}, we saw that for most topics, we simply don't have enough data.
+        \item Another huge limitation comes form the LLaMa-2 model. \begin{enumerate}
+            \item LLaMa-2 was finetuned on a very small dataset of 300 samples. 
+            \item The model seems to output scores that trend towards either extremes and very rarely towards the the middle region of positive or negative.
+            \item Due to the limitation of prompt length accepted by the LLaMa-2 model, we only gave it the first 1024 characters of an article. This affects the sentiment and stance of the article. Our assumption is that, an article's sentiment and stance is clear from the first few sentences. This assumption wasn't tested to ensure validaity on our end.
+        \end{enumerate}
+        \item Not all negative news is country specific. For example, news about the two ongoing conflicts, enviornmental distress, etc. are negative news regardless of the countries stance on the matter. This wasn't considered when doing the hypothesis testing.
+        \item Correlation and monotonic relationship wasn't tested for directionality. Meaning, we know whether the scores are independent or not. If they are not independent, we don't know how exactly they relate. Additional testing is needed to ascertain whether the relationship is positive or negatively correlated.
+    \end{enumerate}
+
     \section{Conclusion}
+
+    Despite the drawbacks, the project is able to find distinctions present amongst news articles published by national and international news media outlets. From the case studies, we can see that these distinctions clearly show up in the hypothesis tests. However, more work is needed to make the overall process more rigorous.
 
     \bibliographystyle{plain}
     \bibliography{references}
