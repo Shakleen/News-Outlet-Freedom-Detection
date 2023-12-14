@@ -17,6 +17,10 @@
 \usepackage{psfrag}
 \usepackage{pgfplots}
 \usepackage{bm}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{subcaption}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Other Settings
@@ -31,6 +35,34 @@
 \definecolor{shallowGreen}{RGB}{235,255,255}
 \definecolor{deepBlue}{RGB}{61,124,222}
 \definecolor{shallowBlue}{RGB}{235,249,255}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Listing Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Define an orangebox command %%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,6 +144,15 @@
         \item \textbf{Publication Date}: When the article was published.
     \end{enumerate}
 
+    Our accumulated data and their countrywise distribution is shown in figure \ref{fig:raw_data}.
+    
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.75\linewidth]{barchart_scraped_data.png}
+        \caption{Collected data across countries of interest from local and international sources}
+        \label{fig:raw_data}
+    \end{figure}
+
     \subsection{Data Processing}
 
     To prepare the data for topic modeling and sentiment-stance analysis we had to process the dataset. This inlcludes the following:
@@ -138,11 +179,186 @@
 
     \subsection{Topic Modeling}
 
+    BERTopic is an unsupervised machine Learning  algorithm for topic modeling. It leverages Bidirectional Encoder Representations from Transformers (BERT) and c-TF-IDF (Class-Based Term Frequency - Inverse Document Frequency) to create coherent and easily interpretable topics, described by automatically generated labels. It has a number of sub-components, which are discussed below, whose understanding at a higher level can inherently improve the topic modeling performance. \cite{grootendorst2022bertopic}
+    
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\linewidth]{BERTopic_diagram.png}
+        \caption{BERTopic Diagram}
+        \label{fig:bertopic_diagram}
+    \end{figure}
+
+    \subsubsection{Transformer Embedding Model}
+    The model embeds Input documents to sentence vector representations which are typically dense in nature. In this project, we used sentence transformers to capture semantic similarity, as it provides an extensive library of high performing sentence embeddings. The L6-v2 version created 384-dimensional sentence embeddings.
+
+    \subsubsection{Dimensionality Reduction}
+    As a next step, BERTopic then performs dimensionality reduction of the 384-dimension sentence embeddings into a lower-dimensional space, either two or three-dimensional vectors. This project used the BERTopic default; Uniform Manifold Approximation and Projection (UMAP). UMAP captures both the local and global high-dimensional space in lower dimensions.
+
+    Since BERTopic provides room for independence between steps, other popular choices for dimensionality reduction such as Principal Components Analysis (PCA) and t-distributed Stochastic Neighbour Embedding (t-SNE) can be used.
+
+    PCA works by preserving larger distances by mean squared error. This results in the data’s global structure being reserved; a pro when there are clusters that are easily distinguishable in the dataset. A demerit of using PCA is that it falls short when dealing with more nuanced data where local structures are vital. Inversely, t-SNE main characteristic is the preservation of similarity. UMAP exploits the best of both worlds, thus an appropriate technique.
+
+    \subsubsection{Clustering}
+
+    Involves clustering dimensionally reduced embeddings into groups of similar embeddings to extract topics. There are an array of clustering techniques such as partition-based, hierarchical based and density-based, to name but a few. Each one of them has its own advantages and disadvantages.
+
+    Hierarchical Density Based Spatial Clustering of Applications with Noise (HDBSCAN) is both hierarchical and density-based. It is BERTopic’s default that is typically used to capture structures with different densities. Advantages of HDBSCAN include: ease of tuning and visualizing hierarchical data, outlier identification and the ability to cluster irregular shapes. 
+
+    Since BERTopic’s independence between steps still hold, K-means can be used for clustering using a centroid approach. A drawback would be poor handling of noisy clusters.
+
+    \subsubsection{Vectorizers}
+
+    As a final step of the BERTopic workflow, topic extraction from the clusters formed in the previous step is done. BERTopic applies the use of a modified version of TF-IDF called Class-Based Term Frequency – Inverse Document Frequency (c-TF-IDF), which finds the most essential and relevant terms given to each document within a cluster. A CountVectorizer is initialized, and together with TF-IDF, topic representations are created, allowing for parameter fine tuning.
+
+    \begin{figure}[hp]
+
+        \centering
+        \begin{subfigure}{0.45\textwidth}
+            \includegraphics[width=\textwidth]{intertopic_distance_map_canada.png}
+            \caption{Canada Intertopic Map}
+            \label{fig:intertopic_canada}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.45\textwidth}
+            \includegraphics[width=\textwidth]{similarity_matrix_canada.png}
+            \caption{Canada Similarity Matrix}
+            \label{fig:sim_canada}
+        \end{subfigure}
+        \hfill
+        
+        \begin{subfigure}{0.45\textwidth}
+            \includegraphics[width=\textwidth]{intertopic_distance_map_china.png}
+            \caption{China Intertopic Map}
+            \label{fig:intertopic_china}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.45\textwidth}
+            \includegraphics[width=\textwidth]{similarity_matrix_china.png}
+            \caption{China Similarity Matrix}
+            \label{fig:sim_china}
+        \end{subfigure}
+        \hfill
+
+        \begin{subfigure}{0.45\textwidth}
+            \includegraphics[width=\textwidth]{intertopic_distance_map_russia.png}
+            \caption{Russia Intertopic Map}
+            \label{fig:intertopic_russia}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.45\textwidth}
+            \includegraphics[width=\textwidth]{similarity_matrix_russia.png}
+            \caption{Russia Similarity Matrix}
+            \label{fig:sim_russia}
+        \end{subfigure}
+                
+        \caption{Intertopic distance maps and similarity matrices for accessing quality of topic models}
+        \label{fig:topic_model_quality}
+    \end{figure}
+
+    \subsubsection{Topic Quality}
+    After tuning the different parameters, we were able to generate topics for our collected data. Figure \ref{fig:topic_model_quality} shows the quality of the topic models. A good topic model will have topics that have low intertopic similarity. Moreover, the bubbles in the intertopic distance map should be large and non-overlapping. The figures clearly show this for our modeled topics. Here are a few interesting observations:
+
+    \begin{enumerate}
+        \item Canadian news has the most amount of topics. Moreover, most of the topics seem to be quite dissimilar to one another.
+        \item Chinese news topics have more similarity between topics. But the media covers a wide array of topics in general.
+        \item Russian news media seem to cover more political news. This is expected as there is a war that's ongoing.
+    \end{enumerate}
+
     \subsection{Sentiment and Stance Analysis}
 
+    For sentiment and stance analysis, we decided to use a Large Language Model (LLM). 
+    
+    \subsubsection{Utilization of LLM}
+    LLMs are excellent for natural language understanding and generation tasks. We used these capabilities of an LLM in the following way:
+
+    \begin{enumerate}
+        \item \textbf{Classification}: Classify the document's sentiment as positive or negative or neutral. Classify the stance as for or neutral or against the local country.
+        \item \textbf{Scoring}: Assign a score from -1.0 (negative / against) to +1.0 (positive / for) for sentiment and stance.
+        \item \textbf{Reason}: The LLM gives a short one sentence reason behind its classification and scoring.
+    \end{enumerate}
+
+    We decided to use the open-source \textbf{LLaMa-2} model, from \emph{Meta}. For our training and inference pipeline we heavily relied on \emph{HuggingFace}.
+
+    \subsubsection{Finetune LLaMa-2}
+
+    To finetune our model, we select 300 samples randomly. 100 samples for each country, and 50 samples for each source type. Afterwards, we engineered an effective prompt using \emph{Prompt Perfect} for LLaMa-2. The prompt is shown in listing \ref{listing:prompt_llama}. It should be noted that we replaced \emph{\{title\}} and \emph{\{content\}} with the actual title and content of the news article being analyzed.
+
+    \begin{lstlisting}[caption=Prompt for LLaMa, label={listing:prompt_llama}]
+As a neutral news analyst, assess the sentiment and stance of the news article
+excerpt and assign a score between -1.0 (completely negative/against-{country}) 
+and 1.0 (completely positive/pro-{country}) for both sentiment and stance. 
+Provide a single short sentence to justify your scores, drawing on the article's
+language, tone, and presentation to support your analysis.
+
+Article Excerpt:
+- Title: "{title}"
+- Content: "{content}"
+
+Output format: 
+1. Sentiment: [Positive/Neutral/Negative]
+    * Score: [Your Score]
+    * Reason: [Your Reason] 
+2. Stance: [Pro-{country}/Impartial/Against-{country}]
+    * Score: [Your Score]
+    * Reason: [Your Reason]
+    \end{lstlisting}
+    
+    To create the finetuning dataset, we fed the 300 articles into ChatGPT using the prompt structure shown above. Next, we finetuned the base model from HuggingFace user \emph{TinyPixel} in the following way:
+
+    \begin{itemize}
+        \item \textbf{Sharded Base model}: A sharded base model allowed us to load chunks of the model one at a time. This, along with QLoRA, allowed us to train the model on a single GPU in google colab.
+        \item \textbf{QLoRA}: We used QLoRA to quantize the model and train a 4-bit version of the LLM. Simply, this allows us to train a subset of the model's parameters instead of the entire model. This allowed us to finetune the model with only a single GPU. \cite{dettmers2023qlora}
+        \item \textbf{PEFT}: Parameter Efficient Fine Tuning was used to train a subset of the model's parameters instead of the entire model. This allowed us to train the model quickly while retaining high performance.
+    \end{itemize}
+
+    After finetuning the model, 4000 samples were selected for each country. Then the sentiment and stance of those countries were predicted using LLaMa-2.
+
     \subsection{Hypothesis Testing}
+    After getting the scores for our dataset, we performed statistical analysis on the scores of the news. In particular, we performed the following hypothesis tests:
+
+    \begin{table}[hp]
+        \centering
+        \begin{tabular}{ | m{2cm} | m{3cm}| m{8cm} | } 
+          \hline
+          \textbf{Test} & \textbf{Parameter of Interest} & \textbf{The Question We Ask} \\ 
+          \hline
+            Welch Test & Mean & Does the average score from both sources have any difference? \\
+            \hline
+            Wilcoxon Test & Median & Is the meidan score from sources different? \\
+            \hline
+            Variance Test & Varaince & Does the content from both sources cover a similar range of sentiment or stance? \\
+            \hline
+            Pearson's Test & Correlation & Is there any linear correlation between the scores from both sources? \\
+            \hline
+            Spearman's Test & Monotonic Relation & Is there any monotonic relationship between the scores from both sources? \\
+            \hline
+        \end{tabular}
+
+        \caption[Prompt Engineering]{Role and Goal prompt engineering and output}
+        \label{table:prompt_engineering}
+    \end{table}
+
+    All tests were done with a confidence level of 99\%. Since we have a lot of data, we wanted to be sure to come to a conclusion. 
 
     \section{Experiment}
+    
+    We break our expriment into 3 case studies. Each case study covers a specific country and analyzes the news from both local and international sources.
+
+    \subsection{Canada}
+    Canadian news media covers a lot of different topics as seen from figure \ref{fig:canada_topic}.
+    
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.75\linewidth]{canada_barchart_topics.png}
+        \caption{Canadian news topics bar chart.}
+        \label{fig:canada_topic}
+    \end{figure}
+
+    
+    
+    \subsection{China}
+
+    \subsection{Russia}
 
     \section{Conclusion}
 
