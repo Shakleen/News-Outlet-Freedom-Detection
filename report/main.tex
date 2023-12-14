@@ -95,11 +95,11 @@
 
     \section{Introduction}
 
-    There are many news organizations around the world. News organizations play a vital role in relaying important news of home and abroad to its readers. These news often cover incidents that are either positive, negative, or neutral. Moreover, some news stories can be viewed as talking for a country or talking against it. 
+    There are many news organizations around the world, who play vital roles in relaying important news of home and abroad to readers. These news often cover incidents that are either positive, negative, or neutral. Moreover, some news stories can be viewed as talking for a country or talking against it. 
 
-    Freedom of speech is the right to express ideas and opinions without censorship, restraint, or fear of retribution. A news outlet is free if it can report news in an unbiased manner and free from censorship. In this project, we aim to detect if a local news organization is free. To do so, we compare the sentiment and stance of the organization with international news reporting institutions \textbf{Reuters} and \textbf{Associated Press}. We assume that the more similar a local news is, in terms of sentiment and stance, to the international media outlets, the more free it is. 
+    Freedom of speech is the right to express ideas and opinions without censorship, restraint, or fear of retribution. A news outlet is free if it reports news in an unbiased manner and free from censorship. In this project, we aim to determine whether local news media of a country has freedom of press. To do so, we compare the sentiment and stance of the organization with international news reporting institutions \textbf{Reuters} and \textbf{Associated Press}. We assume that the more similar a local news is, in terms of sentiment and stance, to the international media outlets, the more free it is. 
     
-    In summary, this study investigates freedom of speech in local news across countries, examining topic-specific distinctions by comparing sentiment and stance scores with international sources to reveal distinctions and assess agreement levels.
+    In summary, this study investigates freedom of speech in local news across countries, examining topic-specific distinctions by comparing sentiment and stance scores with international sources to reveal differences and assess agreement levels.
 
     \section{Related Work}
 
@@ -115,11 +115,16 @@
 
     \begin{enumerate}
         \item \textbf{Data Accumulation}: Select countries to study and collect local-international news articles specific to these countries.
-        \item \textbf{Data Processing}: We prepared the data for analysis by performing text processing.
-        \item \textbf{Topic Modeling}: To compare relevant news articles from both sources we need to first find the topics and categorize news into these topics.
-        \item \textbf{Sentiment and stance analysis}: For each news article, we need to find its sentiment and stance. Specifically, by sentiment, we mean whether a news is positive or neutral or negative. And by stance, we mean whether the news is in support of the local nation or impartial or against it.
-        \item \textbf{Hypothesis testing}: Finally, we perform hypothesis testing on the sentiment and stance score for both source of news. This allows us to come to statistically significant conclusions.
+        \item \textbf{Data Processing}: Prepare the accumulated raw dataset for analysis through text processing.
+        \item \textbf{Topic Modeling}: Distinguish collected articles into distinct topics to perform topicwise comparisons.
+        \item \textbf{Sentiment and stance analysis}: Perform topicwise sentiment and stance detection though \begin{itemize}
+            \item \emph{Hard classification}: Either positive / neutral / negative sentiment and for / impartial / against country stance.
+            \item \emph{Soft classification}: Assign sentiment and stance score ranging from -1, for negative or against, to +1 for positive or in favor stance.
+        \end{itemize}
+        \item \textbf{Hypothesis testing}: Employ statistical inference tests to determine distinctions present in the news data in order to come to a conclusion abour freedom of press.
     \end{enumerate}
+
+    The following subsections present each of these steps in greater detail.
 
     \subsection{Data Acquisition}
 
@@ -184,7 +189,7 @@
 
     \subsection{Topic Modeling}
 
-    BERTopic is an unsupervised machine Learning  algorithm for topic modeling. It leverages Bidirectional Encoder Representations from Transformers (BERT) and c-TF-IDF (Class-Based Term Frequency - Inverse Document Frequency) to create coherent and easily interpretable topics, described by automatically generated labels. It has a number of sub-components, which are discussed below, whose understanding at a higher level can inherently improve the topic modeling performance. \cite{grootendorst2022bertopic}
+    BERTopic is an unsupervised machine learning  algorithm for topic modeling. It leverages Bidirectional Encoder Representations from Transformers (BERT) and c-TF-IDF (Class-Based Term Frequency - Inverse Document Frequency) to create coherent and easily interpretable topics, described by automatically generated labels. It has a number of sub-components, which are discussed below, whose understanding at a higher level can inherently improve the topic modeling performance. \cite{grootendorst2022bertopic}
     
     \begin{figure}[ht]
         \centering
@@ -308,7 +313,32 @@ Output format:
     * Reason: [Your Reason]
     \end{lstlisting}
     
-    To create the finetuning dataset, we fed the 300 articles into ChatGPT using the prompt structure shown above. Next, we finetuned the base model from HuggingFace user \emph{TinyPixel} in the following way:
+    To create the finetuning dataset, we fed the 300 articles into ChatGPT using the prompt structure shown above. The responses from ChatGPT were manually varified for validity. Afterwards, the responses were accumulated to create the finetuning dataset. The finetuning dataset needed to be fed into the LLaMa-2 model in a particular format, shown in lisitng \ref{listing:input_llama}. 
+
+    \begin{lstlisting}[caption=Input for LLaMa, label={listing:input_llama}]
+###Human:
+As a neutral news analyst, assess the sentiment and stance of the news article
+excerpt and assign a score between -1.0 (completely negative/against-{country}) 
+and 1.0 (completely positive/pro-{country}) for both sentiment and stance. 
+Provide a single short sentence to justify your scores, drawing on the article's
+language, tone, and presentation to support your analysis.
+
+Article Excerpt:
+- Title: "{title}"
+- Content: "{content}"
+
+Output format: 
+1. Sentiment: [Positive/Neutral/Negative]
+    * Score: [Your Score]
+    * Reason: [Your Reason] 
+2. Stance: [Pro-{country}/Impartial/Against-{country}]
+    * Score: [Your Score]
+    * Reason: [Your Reason]
+
+###Assistance:\end{lstlisting}
+    
+    
+    Next, we finetuned the base model from HuggingFace user \emph{TinyPixel} in the following way:
 
     \begin{itemize}
         \item \textbf{Sharded Base model}: A sharded base model allowed us to load chunks of the model one at a time. This, along with QLoRA, allowed us to train the model on a single GPU in google colab.
