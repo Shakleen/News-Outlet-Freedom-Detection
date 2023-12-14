@@ -148,7 +148,7 @@
     
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.75\linewidth]{barchart_scraped_data.png}
+        \includegraphics[width=0.75\linewidth]{../images/plots/barchart_scraped_data.png}
         \caption{Collected data across countries of interest from local and international sources}
         \label{fig:raw_data}
     \end{figure}
@@ -183,7 +183,7 @@
     
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.5\linewidth]{BERTopic_diagram.png}
+        \includegraphics[width=0.5\linewidth]{../images/BERTopic_diagram.png}
         \caption{BERTopic Diagram}
         \label{fig:bertopic_diagram}
     \end{figure}
@@ -196,15 +196,15 @@
 
     Since BERTopic provides room for independence between steps, other popular choices for dimensionality reduction such as Principal Components Analysis (PCA) and t-distributed Stochastic Neighbour Embedding (t-SNE) can be used.
 
-    PCA works by preserving larger distances by mean squared error. This results in the data’s global structure being reserved; a pro when there are clusters that are easily distinguishable in the dataset. A demerit of using PCA is that it falls short when dealing with more nuanced data where local structures are vital. Inversely, t-SNE main characteristic is the preservation of similarity. UMAP exploits the best of both worlds, thus an appropriate technique.
+    PCA works by preserving larger distances by mean squared error. This results in the data's global structure being reserved; a pro when there are clusters that are easily distinguishable in the dataset. A demerit of using PCA is that it falls short when dealing with more nuanced data where local structures are vital. Inversely, t-SNE main characteristic is the preservation of similarity. UMAP exploits the best of both worlds, thus an appropriate technique.
 
     \subsubsection{Clustering}
 
     Involves clustering dimensionally reduced embeddings into groups of similar embeddings to extract topics. There are an array of clustering techniques such as partition-based, hierarchical based and density-based, to name but a few. Each one of them has its own advantages and disadvantages.
 
-    Hierarchical Density Based Spatial Clustering of Applications with Noise (HDBSCAN) is both hierarchical and density-based. It is BERTopic’s default that is typically used to capture structures with different densities. Advantages of HDBSCAN include: ease of tuning and visualizing hierarchical data, outlier identification and the ability to cluster irregular shapes. 
+    Hierarchical Density Based Spatial Clustering of Applications with Noise (HDBSCAN) is both hierarchical and density-based. It is BERTopic's default that is typically used to capture structures with different densities. Advantages of HDBSCAN include: ease of tuning and visualizing hierarchical data, outlier identification and the ability to cluster irregular shapes. 
 
-    Since BERTopic’s independence between steps still hold, K-means can be used for clustering using a centroid approach. A drawback would be poor handling of noisy clusters.
+    Since BERTopic's independence between steps still hold, K-means can be used for clustering using a centroid approach. A drawback would be poor handling of noisy clusters.
 
     \subsubsection{Vectorizers}
 
@@ -214,39 +214,39 @@
 
         \centering
         \begin{subfigure}{0.45\textwidth}
-            \includegraphics[width=\textwidth]{intertopic_distance_map_canada.png}
+            \includegraphics[width=\textwidth]{../images/plots/Canada/intertopic_distance_map_canada.png}
             \caption{Canada Intertopic Map}
             \label{fig:intertopic_canada}
         \end{subfigure}
         \hfill
         \begin{subfigure}{0.45\textwidth}
-            \includegraphics[width=\textwidth]{similarity_matrix_canada.png}
+            \includegraphics[width=\textwidth]{../images/plots/Canada/similarity_matrix_canada.png}
             \caption{Canada Similarity Matrix}
             \label{fig:sim_canada}
         \end{subfigure}
         \hfill
         
         \begin{subfigure}{0.45\textwidth}
-            \includegraphics[width=\textwidth]{intertopic_distance_map_china.png}
+            \includegraphics[width=\textwidth]{../images/plots/China/intertopic_distance_map_china.png}
             \caption{China Intertopic Map}
             \label{fig:intertopic_china}
         \end{subfigure}
         \hfill
         \begin{subfigure}{0.45\textwidth}
-            \includegraphics[width=\textwidth]{similarity_matrix_china.png}
+            \includegraphics[width=\textwidth]{../images/plots/China/similarity_matrix_china.png}
             \caption{China Similarity Matrix}
             \label{fig:sim_china}
         \end{subfigure}
         \hfill
 
         \begin{subfigure}{0.45\textwidth}
-            \includegraphics[width=\textwidth]{intertopic_distance_map_russia.png}
+            \includegraphics[width=\textwidth]{../images/plots/Russia/intertopic_distance_map_russia.png}
             \caption{Russia Intertopic Map}
             \label{fig:intertopic_russia}
         \end{subfigure}
         \hfill
         \begin{subfigure}{0.45\textwidth}
-            \includegraphics[width=\textwidth]{similarity_matrix_russia.png}
+            \includegraphics[width=\textwidth]{../images/plots/Russia/similarity_matrix_russia.png}
             \caption{Russia Similarity Matrix}
             \label{fig:sim_russia}
         \end{subfigure}
@@ -345,16 +345,90 @@ Output format:
     We break our expriment into 3 case studies. Each case study covers a specific country and analyzes the news from both local and international sources.
 
     \subsection{Canada}
-    Canadian news media covers a lot of different topics as seen from figure \ref{fig:canada_topic}.
+    From figure \ref{fig:canada_topic}, we can see than Canadian news covers a wide range of topics.
     
-    \begin{figure}[ht]
+    \begin{figure}[hp]
         \centering
-        \includegraphics[width=0.75\linewidth]{canada_barchart_topics.png}
+        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_barchart_topics.png}
         \caption{Canadian news topics bar chart.}
         \label{fig:canada_topic}
     \end{figure}
 
+    \subsubsection{Sentiment Analysis}
+
+    We first begin by showing the distribution of the sentiment scores for each topic from both the local and international media in figure \ref{fig:canada_sentiment_score_boxplot}. 
     
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_boxplot_sentiment.png}
+        \caption{Boxplot showing the topicwise distribution of canadian news sentiment scores for local and international media outlets.}
+        \label{fig:canada_sentiment_score_boxplot}
+    \end{figure}
+
+    Some distinctions are clearly visible here. For example:
+
+    \begin{itemize}
+        \item \emph{Sports} news from both sources tends to have a positive sentiment. Both sources seem to have the same sentiment in this topic.
+        \item \emph{Telecommunication} news from international media seem to cover a wide spectrum of sentiment while local media seem to convey a more negative portrayal of the matter. \emph{Public-service} has the same distribution while \emph{Crime} has the opposite.
+        \item \emph{Transportation} and \emph{weather} has a noticable distinction in their score distribution for both sources.
+    \end{itemize}
+
+    We run statistical inference tests to find these distinctions mathematically. The results are shown in figure \ref{fig:canada_sentiment_score_heatmap}.
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_heatmap_inference_sentiment.png}
+        \caption{Heatmap showing the result of topicwise inference tests done on canadian news sentiment scores.}
+        \label{fig:canada_sentiment_score_heatmap}
+    \end{figure}
+
+    We can see that
+
+    \begin{itemize}
+        \item \emph{Crime}, \emph{transportation}, and \emph{weather} is statistically significant in terms of Welch and Wilcoxon test. Which means that on average the sentiment scores from both sources are different. This means both sources typically report news that are of different sentiment.
+        \item \emph{National-security} is statistically significant in terms of Pearson's and Spearman's test. Which means the score of the two sources aren't independent of each other. There exists some sort of a correlation or monotonic relationship. This means that the two sources report news that are somewhat related. 
+    \end{itemize}
+
+    Let's look at a wordcloud for \emph{Crime} related news from both sources in figure \ref{fig:canada_sentiment_score_wordcloud}.
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_wordcloud_crime.png}
+        \caption{Word cloud for canadian news about crime.}
+        \label{fig:canada_sentiment_score_wordcloud}
+    \end{figure}
+
+    We can see that local and international media use the same sort of words across their negative and positive sentiment news. For example, the word police, fire, government appears in the negative sentiment word cloud for both sources. On the other hand, indigenous community, first, fire, etc. are common in the positive sentiment.
+
+    \subsubsection{Stance Analysis}
+
+    Now let's analyze the stance scores from figure \ref{fig:canada_stance_score_boxplot}. The most interesting observation here is that, international media, in most topics, seem to have an impartial stance, While local news outlet has a more pro-canada stance. The obvious exceptions are \emph{Health} and \emph{Food}.
+    
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_boxplot_stance.png}
+        \caption{Boxplot showing the topicwise distribution of canadian news stance scores for local and international media outlets.}
+        \label{fig:canada_stance_score_boxplot}
+    \end{figure}
+
+    From the statistical test results shown in \ref{fig:canada_stance_score_heatmap}, we see a similar result as the sentiment score inference results. 
+
+    \begin{figure}[hp]
+        \centering
+        \includegraphics[width=\linewidth]{../images/plots/Canada/canada_heatmap_inference_stance.png}
+        \caption{Heatmap showing the result of topicwise inference tests done on canadian news stance scores.}
+        \label{fig:canada_stance_score_heatmap}
+    \end{figure}
+    
+    \begin{itemize}
+        \item \emph{Crime} and \emph{Sport} relatd news seem to have different stance scores on average.
+        \item While \emph{Conflict} related news isn't independent according to Pearson's and Spearman's test.
+        \item Interestingly, \emph{Finance} news has a different variance for stance scores. This means, the two sources cover a different range of stances.
+    \end{itemize}
+
+    \subsubsection{Verdict}
+
+    Although there is statistically significant distinctions in sentiment for a few topics, both sources report news that are similar in sentiment and stance. Which is why, we find canadian news organization "Global News" as a free press organization.
     
     \subsection{China}
 
