@@ -111,10 +111,10 @@
 
     \section{Methodology}
 
-    The methodlogy of our study can be summarized as follows:
+    The methodology of our study can be summarized as follows:
 
     \begin{enumerate}
-        \item \textbf{Data Accumulation}: Select countries to study and collect local-international news articles specific to these countries.
+        \item \textbf{Data Accumulation}: Select countries to study and collect local and international news articles specific to these countries.
         \item \textbf{Data Processing}: Prepare the accumulated raw dataset for analysis through text processing.
         \item \textbf{Topic Modeling}: Distinguish collected articles into distinct topics to perform topicwise comparisons.
         \item \textbf{Sentiment and stance analysis}: Perform topicwise sentiment and stance detection though \begin{itemize}
@@ -132,11 +132,11 @@
 
     \begin{table}[ph]
         \centering
-        \begin{tabular}{|c|l|l|l|}
+        \begin{tabular}{|l|c|c|c|}
             \hline
             Source Type & Canada & China & Russia \\
             \hline
-            Local & Global News & China Daily & The Moscow Times \\
+            Local & Global News and CBC & China Daily & The Moscow Times \\
             \hline
             International & \multicolumn{3}{c|}{Reuters and Associated Press} \\
             \hline
@@ -158,7 +158,7 @@
     
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.75\linewidth]{../images/plots/barchart_scraped_data.png}
+        \includegraphics[width=\linewidth]{../images/plots/barchart_scraped_data.png}
         \caption{Collected data across countries of interest from local and international sources}
         \label{fig:raw_data}
     \end{figure}
@@ -586,14 +586,14 @@ Output format:
 
     \subsubsection{Text Analysis}
 
-    Analyzing the word clouds shown in figure \ref{fig:russian_sentiment_score_wordcloud}, we can see that \emph{Ukrain} is a huge talking point across all sentiments regardless of the source. \emph{Putin} also comes up more in local news while \emph{United States} and \emph{China} comes up a lot in international news. In particular, the US seems to be associated more with negative sentiment while China is associated with more positive sentiment. This could indicate the alliance Russia has with China and the animosity it has with the US. Overall, the distinctions in textual content isn't quite as clear as with chinese news.
-
-    \begin{figure}[hp]
+    \begin{figure}[h]
         \centering
         \includegraphics[width=\linewidth]{../images/plots/Russia/russia_wordcloud_politics.png}
         \caption{Word cloud for russian news about politics.}
         \label{fig:russian_sentiment_score_wordcloud}
     \end{figure}
+
+    Analyzing the word clouds shown in figure \ref{fig:russian_sentiment_score_wordcloud}, we can see that \emph{Ukrain} is a huge talking point across all sentiments regardless of the source. \emph{Putin} also comes up more in local news while \emph{United States} and \emph{China} comes up a lot in international news. In particular, the US seems to be associated more with negative sentiment while China is associated with more positive sentiment. This could indicate the alliance Russia has with China and the animosity it has with the US. Overall, the distinctions in textual content isn't quite as clear as with chinese news.
 
     \subsubsection{Verdict}
 
