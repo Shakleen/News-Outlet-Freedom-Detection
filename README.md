@@ -22,11 +22,7 @@ A news outlet is free if it can report news in an unbiased manner and free from 
     <li><a href="#bertopic">BERTopic</a></li>
     <li><a href="#sentiment-and-stance-analysis-with-llama-2">Sentiment and stance analysis with LLaMa-2</a></li>
     <li><a href="#case-studies">Case Studies</a></li>
-    <ul>
-        <li><a href="#china">China</a></li>
-        <li><a href="#canada">Canada</a></li>
-        <li><a href="#russia">Russia</a></li>
-    </ul>
+    <li><a href="#acknolwedgements">Acknolwedgements</a></li>
   </ol>
 </details>
 
@@ -125,33 +121,16 @@ I used LLaMa-2, the open-source LLM from meta, for sentiment and stance analysis
 
 ## Case Studies
 
-### Canada
+Detailed case studies about China, Russia, and Canada can be found [here](report\main.pdf).
 
-<center><img src=".\images\plots\Canada\canada_barchart_topics.png" alt="drawing" width="600"/></center>
+## Acknolwedgements
 
-#### Sentiment Analysis
-<center><img src=".\images\plots\Canada\canada_boxplot_sentiment.png" alt="drawing" width="600"/></center>
-<center><img src=".\images\plots\Canada\canada_heatmap_inference_sentiment.png" alt="drawing" width="600"/></center>
+As a graduate student of University of Rochester, I am greatly indebted to my teachers for arming me with the knowledge required to perform the analytical and technical aspects of this project. In particular,
 
-* On average has different sentiment from btoh sources.
-    * **Crime**
-    * **Weather** and **Transportation** also but they don't have enough data from both sources.
+* I would like to express my gratitude to **Professor Jiebo Luo** for his invaluable guidance throughout the Data Mining course. The knowledge and insights I gained from this course have been instrumental in processing the accumulated news corpus and performing topic modelling using BERTopic. I am thrilled to see how the techniques I learned from the course can be applied in real-world scenarios.
 
-* **National-security** sentiment from both sources is correlated.
-    * So is **telecommunications** but only according to Spearman.
+* I would like to extend my sincere appreciation to **Professor Anson Kahng** for his invaluable guidance throughout the Computational Introduction to Statistics course. The coursework provided me with the necessary tools to design and carry out hypothesis tests to find statistically significant distinctions between local and international news. I am grateful for the opportunity to apply the knowledge I gained from the course in real-world scenarios.
 
-#### Stance Analysis
-<center><img src=".\images\plots\Canada\canada_boxplot_stance.png" alt="drawing" width="600"/></center>
-<center><img src=".\images\plots\Canada\canada_heatmap_inference_stance.png" alt="drawing" width="600"/></center>
+* I would like to extend my sincere appreciation to **Professor Hangfeng He** for his invaluable guidance throughout the Natural Language Processing course. The course provided me with a comprehensive understanding of the world of LLMs and armed me with the knowledge required to utilize LLaMa-2 for this project. I am grateful for the opportunity to apply the knowledge I gained from the course in real-world scenarios.
 
-* **Sports** and **Crime** has different stances on average.
-* **Conflict** news stance is correlated.
-* **Finance** news seems to have a different variation in stance scores.
-
-#### Verdict
-
-Overall, the inference result heatmap is mostly black, meaning most of the time the null hypothesis holds true. Which means we fail to identify statistically significant distinctions. Thus, canadian news outlet has freedom of speach.
-
-### China
-
-### Russia
+<p align="right">(<a href="#news-outlet-freedom-detection">back to top</a>)</p>
